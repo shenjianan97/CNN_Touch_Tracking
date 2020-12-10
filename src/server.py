@@ -96,7 +96,7 @@ def convertJsonFileToImage(username: str, filename: str, scale_factor: float):
 
 def moveImage(username: str, datasetDir: str):
     os.mkdir(datasetDir)
-    os.mkdir(os.path.join(datasetDir, "me"))
+    os.mkdir(os.path.join(datasetDir, username))
     os.mkdir(os.path.join(datasetDir, "others"))
     # iterate
     dir_list = os.listdir(image_folder_path)
@@ -108,7 +108,7 @@ def moveImage(username: str, datasetDir: str):
                 # me
                 #copy to  dataset
                 for file in os.listdir(cur_path):
-                    copyfile(os.path.join(cur_path, file), os.path.join(datasetDir, "me", file))
+                    copyfile(os.path.join(cur_path, file), os.path.join(datasetDir, username, file))
             else:
                 #others
                 for file in os.listdir(cur_path):
@@ -149,6 +149,7 @@ def predict():
         filename = generatePredictImage(content[USERNAME], content[SDL], 960/content[HEIGHT])
         prediction = cnn.predict(filename)
         print(prediction)
+        os.remove(filename)
         return jsonify(SUCCESS_RESPONSE)
     else:
         return jsonify(ERROR_RESPONSE), 400
