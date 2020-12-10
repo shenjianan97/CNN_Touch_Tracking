@@ -67,6 +67,7 @@ def generatePredictImage(username: str, jsonContent, scale_factor: float) -> str
     # remove white padding
     fileName = "predict" + str(currentTimeMilli()) + ".jpg"
     plt.savefig(fileName, bbox_inches='tight')
+    plt.close()
     return fileName
 
 def convertJsonFileToImage(username: str, filename: str, scale_factor: float):
@@ -150,7 +151,10 @@ def predict():
         prediction = cnn.predict(filename)
         print(prediction)
         os.remove(filename)
-        return jsonify(SUCCESS_RESPONSE)
+        if prediction[0][0] >= 0.65:
+            return jsonify({"result": True})
+        else:
+            return jsonify({"result": False})
     else:
         return jsonify(ERROR_RESPONSE), 400
 
